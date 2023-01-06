@@ -18,6 +18,8 @@ namespace TestNotationPolonaise
         /// <returns>caractère saisi</returns>
         static char saisie(string message, char carac1, char carac2)
         {
+            
+
             char reponse;
             do
             {
@@ -28,8 +30,71 @@ namespace TestNotationPolonaise
             return reponse;
         }
     
+        /*
+         * Fonction de la formule polonaise
+         */
 
-       
+        static float Polonaise (String formule)
+            {
+            try
+            {
+                // Tranormation formule en vecteur
+                string[] vec = formule.Split(' ');
+                // nombre de cases remplis
+                int nbCase = vec.Length;
+
+
+                // Boucle tant qu'il reste plus d'une case
+                while (nbCase > 1)
+                {
+                    float resultat = 0;
+                    int k = nbCase - 1;
+                    // Boucle pour s'arrêter sur un signe en commençant par la fin
+                    while (k > 0 && vec[k] != "+" && vec[k] != "-" && vec[k] != "*" && vec[k] != "/")
+                    {
+                        k--;
+                    }
+                    // Récupération des deux valeurs numérique
+                    float val1 = float.Parse(vec[k + 1]);
+                    float val2 = float.Parse(vec[k + 2]);
+
+
+                    // Calcule des valeurs récupérer 
+                    switch (vec[k])
+                    {
+                        case "+": resultat = val1 + val2; break;
+                        case "-": resultat = val1 - val2; break;
+                        case "*": resultat = val1 * val2; break;
+                        case "/":
+                            if (val2 == 0)
+                            {
+                                return float.NaN;
+                            }
+                            resultat = val1 / val2; break;
+
+                    }
+                    // Stokage et conversion du resultat dans la bonne case
+                    vec[k] = resultat.ToString();
+
+                    // Décalages de 2 cases pour la suite du vecteur (supression de 2 cases)
+                    for (int i = k + 1; i < nbCase - 2; i++)
+                    {
+                        vec[i] = vec[i + 2];
+                    }
+                    nbCase -= 2;
+
+                }
+
+                return float.Parse(vec[0]); 
+            }
+            catch
+            {
+                // Erreur rencontrée 
+                return float.NaN;
+            }
+
+        }
+
         /// <summary>
         /// Saisie de formules en notation polonaise pour tester la fonction de calcul
         /// </summary>
@@ -47,6 +112,7 @@ namespace TestNotationPolonaise
                 Console.WriteLine("Résultat =  " + Polonaise(laFormule));
                 reponse = saisie("Voulez-vous continuer ?", 'O', 'N');
             } while (reponse == 'O');
+            Console.ReadLine();
         }
     }
 }
